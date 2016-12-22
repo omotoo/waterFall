@@ -57,6 +57,11 @@ input, button, select, textarea {
 	height: 0;
 	overflow: hidden;
 }
+.container .top{
+	height: 200px;
+	background: #ccc;
+	border:1px solid #ddd;
+}
 /*视频*/
 .video_content {
 	padding-top: 5px;	/*padding-left: 15px;
