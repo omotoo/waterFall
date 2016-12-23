@@ -40,7 +40,7 @@ a:active {
 }
 body {
 	min-width: 320px;
-	max-width: 720px;
+	/*max-width: 720px;*/
 	margin: 0 auto;
 	font-family: Helvetica Neue, STHeiti, "Microsoft YaHei", Verdana, Geneva, sans-serif;
 	font-size: 14px;
