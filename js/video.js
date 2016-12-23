@@ -69,18 +69,18 @@ function getLastOne(parent){
 function addElement(alreadyLoad,rows,data,parent){
 	var arr=[];
 	for (var i = alreadyLoad; i < alreadyLoad+rows; i++) {
-		var template = "<div class='video'><div class='pic' style='background:url(" + data[i].videoPicture + ") no-repeat;background-size:cover;'></div><p class='video_t'>" + data[i].videoName + "</p></div>";
+		var template = "<div class='video'><div class='pic' style='background:url(" + data[i].videoPicture + ") no-repeat;background-size:100% 100%;'></div><p class='video_t'>" + data[i].videoName + "</p></div>";
 		arr.push(template);
 	}
 	parent.html(parent.html()+arr.join(''));
 }
 
-function setStyle(rows,scale){
+function setStyle(id,rows,scale){
 	var clientWidth=document.documentElement.clientWidth;
 	var aWidth=Math.floor(clientWidth/rows);
 	var aHeight=aWidth/scale;
 	var head=document.getElementsByTagName('head')[0];
-	var style="<style>.video{width:"+(100-rows*2)/rows+"%;margin:1%;}.video .pic{height:"+aHeight+"px;}</style>"
+	var style="<style>"+id+">.video{width:"+(100-rows*2)/rows+"%;margin:1%;}"+id+">.video .pic{height:"+aHeight+"px;}</style>"
 	head.innerHTML+=style;
 }
 
@@ -91,7 +91,7 @@ function waterFall(obj){
 		var rows=obj.firstLoadRows;
 		var scale=obj.scale;
 	}
-	setStyle(rows,scale);
+	setStyle(id,rows,scale);
 	var videoContent=$(id);
 	var flag=true;	
 	var flag2=true;
