@@ -25,11 +25,22 @@ var browser = {
 	language: (navigator.browserLanguage || navigator.language).toLowerCase()
 }
 $(function(){
-	getVideo({
+	waterFall({
 		id:'.video_content',
-		firstLoadRows:3
+		firstLoadRows:4,
+		scale:0.67
 	});
 });
+
+function imgLoad(img,callback){
+	var timer=setInterval(function(){
+		if(img.complte){
+			callback();
+			clearInterval(timer);
+		}
+	},50);	
+}
+
 function getLastOneTop(lastone){
 	var top=lastone.offsetTop;
 	while(lastone.offsetParent!=null){
@@ -58,20 +69,32 @@ function getLastOne(parent){
 function addElement(alreadyLoad,rows,data,parent){
 	var arr=[];
 	for (var i = alreadyLoad; i < alreadyLoad+rows; i++) {
-		var template = "<div class='video'><div class='pic'><img src=" + data[i].videoPicture + " /></div><p class='video_t'>" + data[i].videoName + "</p></div>";
+		var template = "<div class='video'><div class='pic' style='background:url(" + data[i].videoPicture + ") no-repeat;background-size:cover;'></div><p class='video_t'>" + data[i].videoName + "</p></div>";
 		arr.push(template);
 	}
 	parent.html(parent.html()+arr.join(''));
 }
 
-function getVideo(obj){
+function setStyle(rows,scale){
+	var clientWidth=document.documentElement.clientWidth;
+	var aWidth=Math.floor(clientWidth/rows);
+	var aHeight=aWidth/scale;
+	var head=document.getElementsByTagName('head')[0];
+	var style="<style>.video{width:"+(100-rows*2)/rows+"%;margin:1%;}.video .pic{height:"+aHeight+"px;}</style>"
+	head.innerHTML+=style;
+}
+
+function waterFall(obj){
 	if(obj){
 		var id=obj.id;
 		var alreadyLoad=0;
 		var rows=obj.firstLoadRows;
+		var scale=obj.scale;
 	}
+	setStyle(rows,scale);
 	var videoContent=$(id);
-	var flag=true;
+	var flag=true;	
+	var flag2=true;
 	$.ajax({
 		url: 'video.json',
 		type: 'GET',
@@ -83,31 +106,54 @@ function getVideo(obj){
 					rows=data.length-alreadyLoad;
 					flag=false;
 				}				
-				addElement(alreadyLoad,rows,data,videoContent);				
+				addElement(alreadyLoad,rows,data,videoContent);						
 				alreadyLoad+=rows;
 				if(flag){					
 					flag=getLastOneBottom(videoContent);
-					// console.log(flag);
+					console.log(flag);
 				}					
 			};	
 			// 瀑布流			
 			window.onscroll=function(){
-				if(getLastOneBottom(videoContent)){
-					// console.log('到底');
-					var add=0;						
-					while(rows){
-						if(data.length-alreadyLoad>=rows){
-							add=rows;
-							break;							
-						}			
-						rows--;			
-					}
-					addElement(alreadyLoad,add,data,videoContent);	
-					alreadyLoad+=add;
-					// console.log(alreadyLoad);
-				}
+				roll(data);	
 			}
 		}
 	});	
-
+	function roll(data){
+		flag2=true;
+		if(getLastOneBottom(videoContent)){
+			// console.log('到底');
+			var add=0;
+			while(rows){
+				if(data.length-alreadyLoad>=rows){
+					add=rows;
+					break;							
+				}		
+				rows--;			
+			}
+			addElement(alreadyLoad,add,data,videoContent);	
+			alreadyLoad+=add;
+			console.log(add);
+			if(data.length-alreadyLoad<1&&flag2){
+				//请求数据
+				$.ajax({
+					url: 'video2.json',
+					type: 'GET',
+					success:function(data2){
+						// 瀑布流
+						alreadyLoad=0;
+						rows=obj.firstLoadRows;
+						window.onscroll=null;
+						addElement(alreadyLoad,rows-add,data2,videoContent);
+						alreadyLoad=rows-add;
+						window.onscroll=function(){
+							roll(data2);
+						}	
+					}
+				});
+				flag2=false;
+			}
+			// console.log(alreadyLoad);
+		}
+	}
 }
