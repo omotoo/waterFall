@@ -10,7 +10,8 @@ var getData= function (params) {
         type: 'GET',
         success:function(data){
             //data加工成数组
-            dataArray.concat(data)
+            dataArray=data
+            console.log(dataArray)
         }
     });
 }
@@ -21,7 +22,7 @@ $(function(){
 
 
     waterFall('.video_content',{
-        firstLoadRows:4,
+        firstLoadRows:3,
         scale:0.67
     },getData)
 
