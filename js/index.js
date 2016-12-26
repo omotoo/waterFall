@@ -10,8 +10,8 @@ var getData= function (params) {
         type: 'GET',
         success:function(data){
             //data加工成数组
-            dataArray=data
-            console.log(dataArray)
+            //dataArray=data
+            addWaterFallData(data);
         }
     });
 }
