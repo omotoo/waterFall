@@ -84,6 +84,12 @@ function setStyle(id,rows,scale){
 	head.innerHTML+=style;
 }
 
+function getFirstLoad(rows,scale){
+	
+}
+
+// function setFirstLoads(rows,scale)
+
 function waterFall(obj){
 	if(obj){
 		var id=obj.id;
